@@ -1,31 +1,69 @@
-import { KineticTypo1 } from './kineticTypo1';
-import { KineticTypo2 } from './kineticTypo2';
-import { KineticTypo3 } from './kineticTypo3';
-import { KineticTypo4 } from './kineticTypo4';
+import { KineticTypo1 } from './components/KineticTypo1';
+import { KineticTypo2 } from './components/KineticTypo2';
+import { KineticTypo3 } from './components/KineticTypo3';
+import { KineticTypo4 } from './components/KineticTypo4';
+import { KineticTypo5 } from './components/KineticTypo5';
 
 (function () {
-  let current: number = 1;
+  customElements.define('kinetic-typo-element1', KineticTypo1);
+  customElements.define('kinetic-typo-element2', KineticTypo2);
+  customElements.define('kinetic-typo-element3', KineticTypo3);
+  customElements.define('kinetic-typo-element4', KineticTypo4);
+  customElements.define('kinetic-typo-element5', KineticTypo5);
+
+  let current: number = 0;
+
+  const kineticTypo1 = new KineticTypo1();
+  const kineticTypo2 = new KineticTypo2();
+  const kineticTypo3 = new KineticTypo3();
+  const kineticTypo4 = new KineticTypo4();
+  const kineticTypo5 = new KineticTypo5();
+
+  const typos = [
+    kineticTypo1,
+    kineticTypo2,
+    kineticTypo3,
+    kineticTypo4,
+    kineticTypo5,
+  ];
+
+  let currentItem = typos[current];
 
   document.addEventListener('keydown', (e) => {
     switch (e.code) {
       case 'Digit1': {
-        location.hash = '#typo1';
-        current = 1;
+        current = 0;
+        document.body.removeChild(currentItem);
+        document.body.appendChild(typos[current]);
+        currentItem = typos[current];
         break;
       }
       case 'Digit2': {
-        location.hash = '#typo2';
-        current = 2;
+        current = 1;
+        document.body.removeChild(currentItem);
+        document.body.appendChild(typos[current]);
+        currentItem = typos[current];
         break;
       }
       case 'Digit3': {
-        location.hash = '#typo3';
-        current = 3;
+        current = 2;
+        document.body.removeChild(currentItem);
+        document.body.appendChild(typos[current]);
+        currentItem = typos[current];
         break;
       }
       case 'Digit4': {
-        location.hash = '#typo4';
+        current = 3;
+        document.body.removeChild(currentItem);
+        document.body.appendChild(typos[current]);
+        currentItem = typos[current];
+        break;
+      }
+      case 'Digit5': {
         current = 4;
+        document.body.removeChild(currentItem);
+        document.body.appendChild(typos[current]);
+        currentItem = typos[current];
         break;
       }
       default: {
@@ -42,22 +80,23 @@ import { KineticTypo4 } from './kineticTypo4';
       sumDeltaY = 0;
       if (current >= 4) return;
       current += 1;
-      location.hash = `#typo${current}`;
+      document.body.removeChild(currentItem);
+      document.body.appendChild(typos[current]);
+      currentItem = typos[current]
       return;
     }
     if (sumDeltaY < -500) {
       sumDeltaY = 0;
-      if (current <= 1) return;
+      if (current <= 0) return;
       current -= 1;
-      location.hash = `#typo${current}`;
+      document.body.removeChild(currentItem);
+      document.body.appendChild(typos[current]);
+      currentItem = typos[current]
       return;
     }
   }, false);
 
   window.onload = () => {
-    new KineticTypo1();
-    new KineticTypo2();
-    new KineticTypo3();
-    new KineticTypo4();
+    document.body.appendChild(currentItem);
   };
 })();

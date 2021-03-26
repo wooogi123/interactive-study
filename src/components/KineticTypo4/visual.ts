@@ -1,6 +1,6 @@
 import Text from './text';
 import Particle from './particle';
-import { hslToHex } from '../utils';
+import { hslToHex } from '../../utils';
 
 interface Pos {
   x: number;

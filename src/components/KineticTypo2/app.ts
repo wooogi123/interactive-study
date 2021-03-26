@@ -1,9 +1,9 @@
 import * as PIXI from 'pixi.js';
 import Visual from './visual';
-import { getKeyboardAlphabet } from '../utils';
+import { getKeyboardAlphabet } from '../../utils';
 import type { Renderer, Container } from 'pixi.js';
 
-export default class App {
+export default class App extends HTMLElement {
   private canvas: HTMLCanvasElement;
   private visual: Visual | undefined;
   private renderer: Renderer | undefined;
@@ -12,10 +12,13 @@ export default class App {
   private stageHeight: number = 0;
 
   constructor() {
+    super();
+
+    const shadowRoot = this.attachShadow({ mode: 'open' });
     this.canvas = document.createElement('canvas');
-    this.canvas.id = 'typo1';
-    document.body.appendChild(this.canvas);
     this.setWebgl();
+
+    shadowRoot.appendChild(this.canvas);
 
     WebFont.load({
       google: {
@@ -39,7 +42,7 @@ export default class App {
         window.addEventListener('resize', this.resize.bind(this), false);
         this.resize();
 
-        requestAnimationFrame(this.animate.bind(this));
+        requestAnimationFrame(this.customAnimate.bind(this));
       },
     });
   }
@@ -50,49 +53,14 @@ export default class App {
       width: document.body.clientWidth,
       height: document.body.clientHeight,
       antialias: true,
-      transparent: false,
+      backgroundAlpha: 1,
       resolution: (window.devicePixelRatio > 1) ? 2 : 1,
       autoDensity: true,
       powerPreference: 'high-performance',
-      backgroundColor: 0x7f00ff,
+      backgroundColor: 0xffffff,
     });
 
     this.stage = new PIXI.Container();
-
-    const blurFilter = new PIXI.filters.BlurFilter();
-    blurFilter.blur = 10;
-    blurFilter.autoFit = true;
-
-    const fragSource = `
-      precision mediump float;
-      varying vec2 vTextureCoord;
-      uniform sampler2D uSampler;
-      uniform float threshold;
-      uniform float mr;
-      uniform float mg;
-      uniform float mb;
-
-      void main(void) {
-        vec4 color = texture2D(uSampler, vTextureCoord);
-        vec3 mcolor = vec3(mr, mg, mb);
-        if (color.a > threshold) {
-          gl_FragColor = vec4(mcolor, 1.0);
-        } else {
-          gl_FragColor = vec4(vec3(0.0), 0.0);
-        }
-      }
-    `;
-
-    const uniformsData = {
-      threshold: 0.5,
-      mr: 235.0 / 255.0,
-      mg: 235.0 / 255.0,
-      mb: 235.0 / 255.0,
-    };
-
-    const thresholdFilter = new PIXI.Filter(undefined, fragSource, uniformsData);
-    this.stage.filters = [blurFilter, thresholdFilter];
-    this.stage.filterArea = this.renderer.screen;
   }
 
   resize() {
@@ -107,8 +75,8 @@ export default class App {
     this.visual.show(this.stageWidth, this.stageHeight, this.stage);
   }
 
-  animate(t: number) {
-    requestAnimationFrame(this.animate.bind(this));
+  customAnimate(t: number) {
+    requestAnimationFrame(this.customAnimate.bind(this));
 
     if (this.visual === undefined) return;
     this.visual.animate();

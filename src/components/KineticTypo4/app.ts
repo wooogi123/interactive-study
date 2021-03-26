@@ -1,19 +1,32 @@
 import Visual from './visual';
 
-export default class App {
-  private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D | null;
-  private pixelRatio: number;
-  private visual: Visual | undefined;
-  private stageWidth: number = 0;
-  private stageHeight: number = 0;
+export default class App extends HTMLElement {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D | null;
+  pixelRatio: number;
+  visual: Visual | undefined;
+  stageWidth: number = 0;
+  stageHeight: number = 0;
 
   constructor() {
-    this.canvas = document.createElement('canvas');
-    this.canvas.id = 'typo3';
-    document.body.appendChild(this.canvas);
+    super();
 
+    const shadowRoot = this.attachShadow({ mode: 'open' });
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      canvas {
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+      }
+    `;
+    shadowRoot.appendChild(style);
+
+    this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
+
+    shadowRoot.appendChild(this.canvas);
 
     this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
 
@@ -27,7 +40,7 @@ export default class App {
         window.addEventListener('resize', this.resize.bind(this), false);
         this.resize();
 
-        requestAnimationFrame(this.animate.bind(this));
+        requestAnimationFrame(this.customAnimate.bind(this));
       },
     });
   }
@@ -41,22 +54,19 @@ export default class App {
 
     if (this.ctx === null) return;
     this.ctx.scale(this.pixelRatio, this.pixelRatio);
+    this.ctx.globalCompositeOperation = 'lighter';
 
     if (this.visual === undefined) return;
     this.visual.show(this.stageWidth, this.stageHeight);
   }
 
-  animate(t: number) {
-    requestAnimationFrame(this.animate.bind(this));
+  customAnimate() {
+    requestAnimationFrame(this.customAnimate.bind(this));
 
     if (this.ctx === null) return;
     this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
 
     if (this.visual === undefined) return;
-    this.visual.animate(this.ctx, t);
+    this.visual.animate(this.ctx);
   }
 }
-
-window.onload = () => {
-  new App();
-};
