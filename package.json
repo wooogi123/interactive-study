@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
   "devDependencies": {
     "@types/webfontloader": "^1.6.32",
     "parcel": "^2.0.0-beta.2",

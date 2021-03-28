@@ -86,3 +86,5 @@ export default class App extends HTMLElement {
     this.renderer.render(this.stage);
   }
 }
+
+customElements.define('kinetic-typo-element2', App);

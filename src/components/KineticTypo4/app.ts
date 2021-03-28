@@ -70,3 +70,5 @@ export default class App extends HTMLElement {
     this.visual.animate(this.ctx);
   }
 }
+
+customElements.define('kinetic-typo-element4', App);

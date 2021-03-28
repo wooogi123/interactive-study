@@ -3,21 +3,19 @@ import { KineticTypo2 } from './components/KineticTypo2';
 import { KineticTypo3 } from './components/KineticTypo3';
 import { KineticTypo4 } from './components/KineticTypo4';
 import { KineticTypo5 } from './components/KineticTypo5';
+import { KineticTypo6 } from './components/KineticTypo6';
+import { KineticTypo7 } from './components/KineticTypo7';
 
 (function () {
-  customElements.define('kinetic-typo-element1', KineticTypo1);
-  customElements.define('kinetic-typo-element2', KineticTypo2);
-  customElements.define('kinetic-typo-element3', KineticTypo3);
-  customElements.define('kinetic-typo-element4', KineticTypo4);
-  customElements.define('kinetic-typo-element5', KineticTypo5);
-
-  let current: number = 0;
+  let current: number = 6;
 
   const kineticTypo1 = new KineticTypo1();
   const kineticTypo2 = new KineticTypo2();
   const kineticTypo3 = new KineticTypo3();
   const kineticTypo4 = new KineticTypo4();
   const kineticTypo5 = new KineticTypo5();
+  const kineticTypo6 = new KineticTypo6();
+  const kineticTypo7 = new KineticTypo7();
 
   const typos = [
     kineticTypo1,
@@ -25,6 +23,8 @@ import { KineticTypo5 } from './components/KineticTypo5';
     kineticTypo3,
     kineticTypo4,
     kineticTypo5,
+    kineticTypo6,
+    kineticTypo7,
   ];
 
   let currentItem = typos[current];
@@ -66,6 +66,20 @@ import { KineticTypo5 } from './components/KineticTypo5';
         currentItem = typos[current];
         break;
       }
+      case 'Digit6': {
+        current = 5;
+        document.body.removeChild(currentItem);
+        document.body.appendChild(typos[current]);
+        currentItem = typos[current];
+        break;
+      }
+      case 'Digit7': {
+        current = 6;
+        document.body.removeChild(currentItem);
+        document.body.appendChild(typos[current]);
+        currentItem = typos[current];
+        break;
+      }
       default: {
         break;
       }
@@ -78,7 +92,7 @@ import { KineticTypo5 } from './components/KineticTypo5';
     sumDeltaY += e.deltaY;
     if (sumDeltaY > 500) {
       sumDeltaY = 0;
-      if (current >= 4) return;
+      if (current >= 6) return;
       current += 1;
       document.body.removeChild(currentItem);
       document.body.appendChild(typos[current]);

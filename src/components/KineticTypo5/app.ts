@@ -165,3 +165,5 @@ export default class App extends HTMLElement {
     }
   }
 }
+
+customElements.define('kinetic-typo-element5', App);

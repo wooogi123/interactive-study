@@ -1,0 +1,1 @@
+export { default as KineticTypo6 } from './app';

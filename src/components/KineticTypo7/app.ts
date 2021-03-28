@@ -15,18 +15,9 @@ export default class App extends HTMLElement {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
 
-    const style = document.createElement('style');
-    style.innerHTML = `
-      canvas {
-        width: 100%;
-        height: 100%;
-      }
-    `;
-    shadowRoot.appendChild(style);
-
-    shadowRoot.append(this.canvas);
-
     this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
+
+    shadowRoot.appendChild(this.canvas);
 
     WebFont.load({
       google: {
@@ -50,8 +41,13 @@ export default class App extends HTMLElement {
     this.canvas.width = this.stageWidth * this.pixelRatio;
     this.canvas.height = this.stageHeight * this.pixelRatio;
 
+    this.canvas.style.width = `${this.stageWidth}px`;
+    this.canvas.style.height = `${this.stageHeight}px`;
+
     if (this.ctx === null) return;
     this.ctx.scale(this.pixelRatio, this.pixelRatio);
+    this.ctx.lineCap = 'round';
+    this.ctx.lineWidth = 4;
 
     if (this.visual === undefined) return;
     this.visual.show(this.stageWidth, this.stageHeight);
@@ -64,8 +60,8 @@ export default class App extends HTMLElement {
     this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
 
     if (this.visual === undefined) return;
-    this.visual.animate(this.ctx, t);
+    this.visual.animate(this.ctx);
   }
 }
 
-customElements.define('kinetic-typo-element3', App);
+customElements.define('kinetic-typo-element7', App);
