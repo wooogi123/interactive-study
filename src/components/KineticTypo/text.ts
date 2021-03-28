@@ -1,4 +1,4 @@
-import { pointCircle } from '../../utils';
+import { pointCircle } from './utils';
 
 interface Pos {
   x: number;
@@ -10,6 +10,21 @@ interface X {
   item: Pos;
 }
 
+interface Outline {
+  x: number;
+  minY: number;
+  maxY: number;
+}
+
+interface GetOutlineReturn {
+  particles: Pos[];
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  outline: Outline[];
+}
+
 export default class Text {
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D | null;
@@ -19,7 +34,7 @@ export default class Text {
     this.ctx = this.canvas.getContext('2d');
   }
 
-  getOutline(particles: Pos[], density: number) {
+  getOutline(particles: Pos[], density: number): GetOutlineReturn {
     let minX = particles[0].x;
     let maxX = particles[0].x;
     let minY = particles[0].y;
@@ -112,18 +127,30 @@ export default class Text {
     };
   }
 
-  dotPos(
+  public dotPos(
     density: number,
     stageWidth: number,
     stageHeight: number,
+    outline: boolean,
+  ): GetOutlineReturn | undefined;
+  public dotPos(
+    density: number,
+    stageWidth: number,
+    stageHeight: number,
+  ): Pos[] | undefined;
+  public dotPos(
+    density: number,
+    stageWidth: number,
+    stageHeight: number,
+    outline?: boolean,
   ) {
-    if (this.ctx === null) return;
+    if (this.ctx === null) return undefined;
     const imageData = this.ctx.getImageData(
       0, 0,
       stageWidth, stageHeight,
     ).data;
 
-    const particles = [];
+    const particles: Pos[] = [];
     let i = 0;
     let width = 0;
     let pixel;
@@ -151,14 +178,32 @@ export default class Text {
       }
     }
 
-    return this.getOutline(particles, density);
+    if (outline) {
+      return this.getOutline(particles, density);
+    }
+
+    return particles;
   }
 
-  setText(
+  public setText(
     str: string,
     density: number,
     stageWidth: number,
     stageHeight: number,
+    outline: boolean,
+  ): GetOutlineReturn | undefined;
+  public setText(
+    str: string,
+    density: number,
+    stageWidth: number,
+    stageHeight: number,
+  ): Pos[] | undefined;
+  public setText(
+    str: string,
+    density: number,
+    stageWidth: number,
+    stageHeight: number,
+    outline?: boolean,
   ) {
     this.canvas.width = stageWidth;
     this.canvas.height = stageHeight;
@@ -168,21 +213,30 @@ export default class Text {
     const myText = str;
     const fontWidth = 700;
     const fontSize = 800;
-    const fontName = 'Hind';
+    const fontName = 'iA Writer Mono';
 
     this.ctx.clearRect(0, 0, stageWidth, stageHeight);
     this.ctx.font = `${fontWidth} ${fontSize}px ${fontName}`;
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     this.ctx.textBaseline = 'middle';
     const fontPos = this.ctx.measureText(myText);
-    this.ctx.fillText(
-      myText,
-      (stageWidth - fontPos.width) / 2,
+
+    const fontFillx = (stageWidth - fontPos.width) / 2;
+    const fontFilly =
       fontPos.actualBoundingBoxAscent +
       fontPos.actualBoundingBoxDescent +
-      ((stageHeight - fontSize) / 2),
-    );
+      (stageHeight - fontSize) / 10;
+    this.ctx.fillText(myText, fontFillx, fontFilly);
 
+    if (outline) {
+      return this.dotPos(
+        density,
+        stageWidth,
+        stageHeight,
+        outline,
+      );
+    }
     return this.dotPos(density, stageWidth, stageHeight);
   }
 }
+

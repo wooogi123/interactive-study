@@ -1,55 +1,28 @@
 import * as PIXI from 'pixi.js';
 import Visual from './visual';
-import { getKeyboardAlphabet } from '../..//utils';
 import type { Renderer, Container } from 'pixi.js';
 
-export default class App extends HTMLElement {
-  private canvas: HTMLCanvasElement;
-  private visual: Visual | undefined;
+export default class App {
+  private visual: Visual;
   private renderer: Renderer | undefined;
   private stage: Container | undefined;
   private stageWidth: number = 0;
   private stageHeight: number = 0;
 
-  constructor() {
-    super();
+  constructor(canvas: HTMLCanvasElement) {
+    this.setWebgl(canvas);
 
-    const shadowRoot = this.attachShadow({ mode: 'open' });
-    this.canvas = document.createElement('canvas');
-    this.setWebgl();
+    this.visual = new Visual();
 
-    shadowRoot.appendChild(this.canvas);
+    window.addEventListener('resize', this.resize.bind(this), false);
+    this.resize();
 
-    WebFont.load({
-      google: {
-        families: ['Hind:700'],
-      },
-      fontactive: () => {
-        this.visual = new Visual();
-
-        document.addEventListener('keydown', (e) => {
-          if (getKeyboardAlphabet(e.code)
-            && this.stage !== undefined) {
-            this.visual?.show(
-              this.stageWidth,
-              this.stageHeight,
-              this.stage,
-              e.key.toUpperCase(),
-            );
-          }
-        }, false);
-
-        window.addEventListener('resize', this.resize.bind(this), false);
-        this.resize();
-
-        requestAnimationFrame(this.customAnimate.bind(this));
-      },
-    });
+    requestAnimationFrame(this.customAnimate.bind(this));
   }
 
-  setWebgl() {
+  setWebgl(canvas: HTMLCanvasElement) {
     this.renderer = new PIXI.Renderer({
-      view: this.canvas,
+      view: canvas,
       width: document.body.clientWidth,
       height: document.body.clientHeight,
       antialias: true,
@@ -105,7 +78,6 @@ export default class App extends HTMLElement {
     if (this.renderer === undefined) return;
     this.renderer.resize(this.stageWidth, this.stageHeight);
 
-    if (this.visual === undefined) return;
     if (this.stage === undefined) return;
     this.visual.show(this.stageWidth, this.stageHeight, this.stage);
   }
@@ -113,7 +85,6 @@ export default class App extends HTMLElement {
   customAnimate(t: number) {
     requestAnimationFrame(this.customAnimate.bind(this));
 
-    if (this.visual === undefined) return;
     this.visual.animate();
 
     if (this.renderer === undefined) return;
@@ -121,5 +92,3 @@ export default class App extends HTMLElement {
     this.renderer.render(this.stage);
   }
 }
-
-customElements.define('kinetic-typo-element1', App);

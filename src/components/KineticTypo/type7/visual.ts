@@ -1,7 +1,10 @@
-import Text from './text';
+import Text from '../text';
 import BounceString from './bounceString';
 
-type Pos = ReturnType<Text['setText']>;
+interface Pos {
+  x: number;
+  y: number;
+}
 
 interface Mouse {
   x: number;
@@ -9,11 +12,26 @@ interface Mouse {
   radius: number;
 }
 
+interface Outline {
+  x: number;
+  minY: number;
+  maxY: number;
+}
+
+interface GetOutlineReturn {
+  particles: Pos[];
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  outline: Outline[];
+}
+
 export default class Visual {
   text: Text;
   strings: BounceString[];
   mouse: Mouse;
-  pos: Pos;
+  pos: GetOutlineReturn | undefined;
 
   constructor() {
     this.text = new Text();
@@ -30,13 +48,12 @@ export default class Visual {
   }
 
   show(stageWidth: number, stageHeight: number) {
-    this.pos = this.text.setText('A', 5, stageWidth, stageHeight);
+    this.pos = this.text.setText('A', 5, stageWidth, stageHeight, true);
 
     this.strings = [];
 
     if (this.pos === undefined) return;
 
-    console.log(this.pos.outline);
     for (let i = 0; i < this.pos.outline.length; i++) {
       this.strings[i] = new BounceString({
         x1: this.pos.outline[i].x,

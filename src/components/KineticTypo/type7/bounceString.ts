@@ -1,4 +1,4 @@
-import { lineCircle } from '../../utils';
+import { lineCircle } from '../utils';
 
 const BOUNCE: number = 0.92;
 
