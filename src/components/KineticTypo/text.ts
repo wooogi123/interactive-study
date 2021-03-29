@@ -225,7 +225,7 @@ export default class Text {
     const fontFilly =
       fontPos.actualBoundingBoxAscent +
       fontPos.actualBoundingBoxDescent +
-      (stageHeight - fontSize) / 10;
+      (stageHeight - fontSize) / 3;
     this.ctx.fillText(myText, fontFillx, fontFilly);
 
     if (outline) {

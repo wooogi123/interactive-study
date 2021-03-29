@@ -47,8 +47,8 @@ export default class Visual {
     document.addEventListener('pointermove', this.onMove.bind(this), false);
   }
 
-  show(stageWidth: number, stageHeight: number) {
-    this.pos = this.text.setText('A', 5, stageWidth, stageHeight, true);
+  show(stageWidth: number, stageHeight: number, srcStr: string | undefined = 'A') {
+    this.pos = this.text.setText(srcStr, 5, stageWidth, stageHeight, true);
 
     this.strings = [];
 
