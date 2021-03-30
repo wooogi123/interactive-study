@@ -88,7 +88,7 @@ export default class Particle {
 
     const fontWidth = 700;
     const fontSize = 14;
-    const fontName = 'Hind';
+    const fontName = 'iA Writer Mono';
     ctx.font = `${fontWidth} ${fontSize}px ${fontName}`;
     ctx.textBaseline = 'middle';
     const textPos = ctx.measureText(str);

@@ -1,6 +1,6 @@
-import Text from './text';
+import Text from '../text';
 import Particle from './particle';
-import { hslToHex } from '../../utils';
+import { hslToHex } from '../utils';
 
 interface Pos {
   x: number;
@@ -36,7 +36,7 @@ export default class Visual {
     stageWidth: number,
     stageHeight: number,
   ) {
-    this.pos = this.text.setText('W', 20, stageWidth, stageHeight) ?? [];
+    this.pos = this.text.setText('X', 20, stageWidth, stageHeight) ?? [];
     this.posTotal = this.pos.length - 1;
   }
 

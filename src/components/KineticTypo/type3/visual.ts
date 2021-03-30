@@ -1,4 +1,4 @@
-import Text from './text';
+import Text from '../text';
 import Particle from './particle';
 
 export const RANDOM_TEXT: string = 'ABCMNRSTUXZ';

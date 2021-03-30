@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { hslToHexNumber } from '../../utils';
+import { hslToHexNumber } from '../utils';
 import type { Texture, Sprite } from 'pixi.js';
 
 interface Pos {

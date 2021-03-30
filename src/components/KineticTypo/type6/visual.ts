@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js';
-import Text from './text';
+import Text from '../text';
 import ParticleGroup from './particleGroup';
 // @ts-ignore
-import ParticleRaw from '../../assets/particle.png';
+import ParticleRaw from '../../../assets/particle.png';
 import type {
   Texture,
   Container,

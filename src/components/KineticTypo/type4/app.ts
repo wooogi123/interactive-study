@@ -14,8 +14,10 @@ export default class App {
       canvas {
         width: 100%;
         height: 100%;
+        background-color: #000000;
       }
     `;
+
     root.insertBefore(style, canvas);
 
     this.canvas = canvas;
@@ -24,10 +26,11 @@ export default class App {
     this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
 
     this.visual = new Visual();
+
     window.addEventListener('resize', this.resize.bind(this), false);
     this.resize();
 
-    requestAnimationFrame(this.customAnimate.bind(this));
+    requestAnimationFrame(this.animate.bind(this));
   }
 
   resize() {
@@ -39,20 +42,17 @@ export default class App {
 
     if (this.ctx === null) return;
     this.ctx.scale(this.pixelRatio, this.pixelRatio);
-    this.ctx.lineCap = 'round';
-    this.ctx.lineWidth = 4;
+    this.ctx.globalCompositeOperation = 'lighter';
 
-    if (this.visual === undefined) return;
     this.visual.show(this.stageWidth, this.stageHeight);
   }
 
-  customAnimate(t: number) {
-    requestAnimationFrame(this.customAnimate.bind(this));
+  animate() {
+    requestAnimationFrame(this.animate.bind(this));
 
     if (this.ctx === null) return;
     this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
 
-    if (this.visual === undefined) return;
     this.visual.animate(this.ctx);
   }
 }

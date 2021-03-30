@@ -1,12 +1,12 @@
 // @ts-ignore
-import Gogh1 from '../../assets/gogh1.jpg';
+import Gogh1 from '../../../assets/gogh1.jpg';
 // @ts-ignore
-import Gogh2 from '../../assets/gogh2.jpg';
+import Gogh2 from '../../../assets/gogh2.jpg';
 // @ts-ignore
-import Gogh3 from '../../assets/gogh3.jpg';
+import Gogh3 from '../../../assets/gogh3.jpg';
 import Visual from './visual';
 import { setColor } from './color';
-import Text from './text';
+import Text from '../text';
 
 interface Thumb {
   item: HTMLLIElement;
@@ -18,7 +18,7 @@ interface Pos {
   y: number;
 }
 
-export default class App extends HTMLElement {
+export default class App {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D | null;
   private pixelRatio: number;
@@ -29,11 +29,7 @@ export default class App extends HTMLElement {
   private pos: Pos[] | undefined;
   private visual: Visual | undefined;
 
-  constructor() {
-    super();
-
-    const shadowRoot = this.attachShadow({ mode: 'open' });
-
+  constructor(canvas: HTMLCanvasElement, root: ShadowRoot) {
     const style = document.createElement('style');
     style.innerHTML = `
       #kinetic-typo__wrapper {
@@ -45,6 +41,7 @@ export default class App extends HTMLElement {
       canvas {
         width: 100%;
         height: 100%;
+        background-color: #000000;
       }
 
       ul {
@@ -73,57 +70,48 @@ export default class App extends HTMLElement {
         height: 100%;
       }
     `;
-    shadowRoot.appendChild(style);
+
+    root.insertBefore(style, canvas);
 
     const wrapper = document.createElement('div');
     wrapper.setAttribute('id', 'kinetic-typo__wrapper');
 
-    this.canvas = document.createElement('canvas');
+    this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
 
     this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
 
     this.thumbs = [];
 
-    wrapper.appendChild(this.canvas);
+    const ul = document.createElement('ul');
 
+    [Gogh1, Gogh2, Gogh3].forEach((image, i) => {
+      const li = document.createElement('li');
+      const img = document.createElement('img');
+      img.src = image;
+      img.addEventListener('click', (e) => {
+        this.show(i);
+      }, false)
 
-    WebFont.load({
-      google: {
-        families: ['Hind:700'],
-      },
-      fontactive: () => {
-        const ul = document.createElement('ul');
+      this.thumbs[i] = {
+        item: li,
+        img: img.src,
+      };
 
-        [Gogh1, Gogh2, Gogh3].forEach((image, i) => {
-          const li = document.createElement('li');
-          const img = document.createElement('img');
-          img.src = image;
-          img.addEventListener('click', (e) => {
-            this.show(i);
-          }, false)
+      li.appendChild(img);
+      ul.appendChild(li);
 
-          this.thumbs[i] = {
-            item: li,
-            img: img.src,
-          };
+      wrapper.appendChild(ul);
 
-          li.appendChild(img);
-          ul.appendChild(li);
+      this.text = new Text();
 
-          wrapper.appendChild(ul);
+      window.addEventListener('resize', this.resize.bind(this), false);
+      this.resize();
 
-          this.text = new Text();
-
-          window.addEventListener('resize', this.resize.bind(this), false);
-          this.resize();
-
-          requestAnimationFrame(this.customAnimate.bind(this));
-        });
-      },
+      requestAnimationFrame(this.customAnimate.bind(this));
     });
 
-    shadowRoot.appendChild(wrapper);
+    root.appendChild(wrapper);
   }
 
   async show(index: number) {
@@ -154,7 +142,7 @@ export default class App extends HTMLElement {
     this.ctx?.scale(this.pixelRatio, this.pixelRatio);
 
     if (this.text === undefined) return;
-    this.pos = this.text.setText('M', 6, this.stageWidth, this.stageHeight);
+    this.pos = this.text.setText('X', 6, this.stageWidth, this.stageHeight);
   }
 
   customAnimate(t: number) {
@@ -165,5 +153,3 @@ export default class App extends HTMLElement {
     }
   }
 }
-
-customElements.define('kinetic-typo-element5', App);

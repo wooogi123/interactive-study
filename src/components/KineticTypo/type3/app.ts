@@ -1,6 +1,6 @@
 import Visual from './visual';
 
-export default class App extends HTMLElement {
+export default class App {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D | null;
   private pixelRatio: number;
@@ -8,13 +8,7 @@ export default class App extends HTMLElement {
   private stageWidth: number = 0;
   private stageHeight: number = 0;
 
-  constructor() {
-    super();
-
-    const shadowRoot = this.attachShadow({ mode: 'open' });
-    this.canvas = document.createElement('canvas');
-    this.ctx = this.canvas.getContext('2d');
-
+  constructor(canvas: HTMLCanvasElement, root: ShadowRoot) {
     const style = document.createElement('style');
     style.innerHTML = `
       canvas {
@@ -22,25 +16,19 @@ export default class App extends HTMLElement {
         height: 100%;
       }
     `;
-    shadowRoot.appendChild(style);
+    root.insertBefore(style, canvas);
 
-    shadowRoot.append(this.canvas);
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d');
 
     this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
 
-    WebFont.load({
-      google: {
-        families: ['Hind:700'],
-      },
-      fontactive: () => {
-        this.visual = new Visual();
+    this.visual = new Visual();
 
-        window.addEventListener('resize', this.resize.bind(this), false);
-        this.resize();
+    window.addEventListener('resize', this.resize.bind(this), false);
+    this.resize();
 
-        requestAnimationFrame(this.customAnimate.bind(this));
-      },
-    });
+    requestAnimationFrame(this.animate.bind(this));
   }
 
   resize() {
@@ -57,8 +45,8 @@ export default class App extends HTMLElement {
     this.visual.show(this.stageWidth, this.stageHeight);
   }
 
-  customAnimate(t: number) {
-    requestAnimationFrame(this.customAnimate.bind(this));
+  animate(t: number) {
+    requestAnimationFrame(this.animate.bind(this));
 
     if (this.ctx === null) return;
     this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
@@ -67,5 +55,3 @@ export default class App extends HTMLElement {
     this.visual.animate(this.ctx, t);
   }
 }
-
-customElements.define('kinetic-typo-element3', App);

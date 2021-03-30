@@ -1,5 +1,5 @@
 import Particle from './particle';
-import { distance, pointCircle } from '../../utils';
+import { distance, pointCircle } from '../utils';
 import type { Texture } from 'pixi.js';
 
 const DEFAULT_ANGLE: number = 90 * Math.PI / 180;
